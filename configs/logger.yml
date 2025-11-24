@@ -1,0 +1,193 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  standard:
+    format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  
+  detailed:
+    format: "%(asctime)s [%(levelname)s] %(name)s [%(filename)s:%(lineno)d] - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  
+  simple:
+    format: "[%(levelname)s] %(name)s: %(message)s"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+
+  info_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: ./logs/info.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+  error_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: detailed
+    filename: ./logs/error.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+  debug_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: ./logs/debug.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 3
+    encoding: utf8
+
+  training_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: ./logs/training.log
+    maxBytes: 20971520  # 20MB
+    backupCount: 10
+    encoding: utf8
+
+  model_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: ./logs/model.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+  data_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: ./logs/data.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+loggers:
+  # Root logger
+  "":
+    level: INFO
+    handlers: [console, info_file_handler, error_file_handler]
+    propagate: False
+
+  # Training specific logger
+  training:
+    level: INFO
+    handlers: [console, training_file_handler, error_file_handler]
+    propagate: False
+
+  # Model specific logger
+  model_info:
+    level: INFO
+    handlers: [console, model_file_handler, error_file_handler]
+    propagate: False
+
+  # Data processing logger
+  data_info:
+    level: INFO
+    handlers: [console, data_file_handler, error_file_handler]
+    propagate: False
+
+  # Error logger
+  error:
+    level: ERROR
+    handlers: [console, error_file_handler]
+    propagate: False
+
+  # Debug logger (for development)
+  debug:
+    level: DEBUG
+    handlers: [console, debug_file_handler]
+    propagate: False
+
+  # API logger
+  api:
+    level: INFO
+    handlers: [console, info_file_handler, error_file_handler]
+    propagate: False
+
+  # Data processing modules
+  src.data:
+    level: INFO
+    handlers: [console, data_file_handler]
+    propagate: False
+
+  # Model modules
+  src.models:
+    level: INFO
+    handlers: [console, model_file_handler]
+    propagate: False
+
+  # Training modules
+  src.training:
+    level: INFO
+    handlers: [console, training_file_handler]
+    propagate: False
+
+  # API modules
+  src.api:
+    level: INFO
+    handlers: [console, info_file_handler]
+    propagate: False
+
+  # Utils modules
+  src.utils:
+    level: INFO
+    handlers: [console, info_file_handler]
+    propagate: False
+
+  # External libraries (reduce verbosity)
+  urllib3.connectionpool:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+  requests.packages.urllib3:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+  PIL:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+  matplotlib:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+  wandb:
+    level: INFO
+    handlers: [console, training_file_handler]
+    propagate: False
+
+  torch:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+  torchvision:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+  tensorflow:
+    level: WARNING
+    handlers: [console]
+    propagate: False
+
+root:
+  level: INFO
+  handlers: [console, info_file_handler, error_file_handler]

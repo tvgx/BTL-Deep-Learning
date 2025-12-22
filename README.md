@@ -1,46 +1,31 @@
 # BTL-Deep-Learning
 
-A deep learning project focused on face detection and image processing using the CelebA dataset.
+Binary classifier for real vs. fake face images using a frozen CLIP ViT-L/14 backbone with a lightweight linear head. Training and evaluation are driven from the notebook notebooks/train-real-vs-fake-face-classifier.ipynb.
 
-## What I've Done
+## Data
+- Real: CelebA subset under data/processed/sample_1pct/celeba/ (label 0)
+- Fake: three sources under data/processed/sample_1pct/ — fairfacegen/, person_face_dataset/, stable_diffusion_faces/ (label 1)
+- Allowed extensions: .jpg, .jpeg, .png, .webp, .bmp
 
-### 📁 Project Structure Setup
-- Created a well-organized project structure with separate folders for:
-  - `src/`: Source code modules
-  - `data/`: Dataset storage (raw, processed, augmented)
-  - `models/`: Model checkpoints and saved models
-  - `notebooks/`: Jupyter notebooks for experimentation
-  - `configs/`: Configuration files and logging setup
+## Environment
+- Python 3.10+ recommended, GPU strongly suggested
+- Install deps: `pip install -r requirements.txt`
+- Kaggle access: place kaggle.json in project root or your Kaggle config dir to run download notebooks
 
-### 📊 Dataset Integration
-- Implemented Kaggle API integration for dataset downloading
-- Created `download_from_kaggle.py` module for easy dataset management
-- Successfully downloaded CelebA dataset (Celebrity Faces Attributes Dataset)
-- Set up data pipeline in `notebooks/download_data.ipynb`
+## Training (Notebook)
+Open notebooks/train-real-vs-fake-face-classifier.ipynb and run top-to-bottom:
+- Paths: adjust DATA_ROOT and MODEL_SAVE_PATH (defaults target Kaggle /kaggle/input/... and /kaggle/working/; set to local data/processed/sample_1pct if training locally)
+- Model: CLIP ViT-L/14 frozen encoder + 3-layer MLP head with sigmoid
+- Augmentation: resize→random crop 224, flip, rotation 15°, color jitter, Gaussian blur; val/test use center crop
+- Splits: per-source train/val/test, then merged and shuffled
+- Training: BCELoss, Adam (lr 1e-3), ReduceLROnPlateau, batch size 32, early stopping patience 5
+- Outputs: best_model.pth and final_model.pth stored at MODEL_SAVE_PATH; history and metrics saved with checkpoints
 
-### 🚀 Quick Start
+## Evaluation & Visualization
+- Validation/test metrics logged each epoch; test evaluation runs after loading best_model.pth
+- Section “Visualize Predictions” in the notebook plots sample predictions with confidence
+- Section “Plot Training History” renders loss/accuracy curves and prints best val acc and final test acc
 
-1. **Setup Environment**:
-   ```bash
-   pip install -r requirements.txt
-   # Or use conda, uv, env...
-   ```
-
-2. **Configure Kaggle API**:
-   - Download `kaggle.json` from your Kaggle account
-   - Place it in the project root or Kaggle config directory
-   - See: https://www.kaggle.com/discussions/general/74235
-
-3. **Download Dataset**:
-   - Open `notebooks/download_data.ipynb`
-   - Run the cells to download CelebA dataset to `data/raw/celeba/`
-
-### 📋 Development Guidelines
-- Use separate branches for new features
-- Follow the established folder structure
-- Test changes before merging to main branch
-
-## Next Steps
-- Model training and evaluation
-- Face detection implementation
-- Web interface development
+## Development Notes
+- Keep folder layout intact (src/, data/, models/, notebooks/, configs/)
+- Use feature branches and run notebook or unit checks before merging

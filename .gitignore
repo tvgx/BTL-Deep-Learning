@@ -420,3 +420,4 @@ FodyWeavers.xsd
 data/raw/
 data/processed/
 data/augmented/
+models/

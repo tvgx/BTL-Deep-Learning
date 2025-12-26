@@ -16,6 +16,16 @@ seaborn==0.12.2
 
 
 # Web Framework & API
+fastapi==0.115.5
+uvicorn==0.32.0
+
+# PyTorch + Vision (ensure installed per your platform)
+# If these fail via requirements, install with platform-specific wheels.
+torch
+torchvision
+Pillow==10.4.0
+
+# CLIP (installed via git in code if missing)
 
 
 # Data Handling & Utilities
